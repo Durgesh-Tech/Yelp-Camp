@@ -3,8 +3,6 @@ const Review = require('./review');
 const Schema = mongoose.Schema;
 
 
-// https://res.cloudinary.com/dnf40ucps/image/upload/v1693222823/YelpCamp/biij0vrt0xyfhgb7tbor.jpg
-
 const ImageSchema = new Schema({
      url: String,
      filename: String
@@ -19,7 +17,7 @@ const opts = { toJSON: { virtuals: true } };
 const CampgroundSchema = new Schema({
      title: String,
      images: [ImageSchema],
-     geometry: { // 3.2
+     geometry: { 
           type: {
                type: String,
                enum: ['Point'],
