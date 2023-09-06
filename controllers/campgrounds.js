@@ -1,7 +1,7 @@
 const Campground = require('../models/campground');
-const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");// 2.1 installing mapbox and mapbox sdk and then requiring in it
-const mapBoxToken = process.env.MAPBOX_TOKEN; // 2.2 need to link with the mapbox token
-const geocoder = mbxGeocoding({ accessToken: mapBoxToken }); // 2.3 geocode with the access token of mapbox.
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+const mapBoxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
 const { cloudinary } = require('../cloudinary');
 
 
@@ -15,18 +15,12 @@ module.exports.renderNewForm = (req, res) => {
 }
 
 module.exports.createCampground = async (req, res, next) => {
-     const geoData = await geocoder.forwardGeocode({//
-          // query: 'Yosemite, CA',//
-          query: req.body.campground.location,//2.7
-          limit: 1//
-     }).send()//
-     // console.log(geoData);//2.4 
-     // console.log(geoData.body.features);// 2.5
-     // res.send(geoData.body.features[0].geometry.coordinates);//2.6
-     // res.send("OK!!");// 2.4
-
+     const geoData = await geocoder.forwardGeocode({
+          query: req.body.campground.location,
+          limit: 1
+     }).send()
      const campground = new Campground(req.body.campground);
-     campground.geometry = geoData.body.features[0].geometry;//3.1 
+     campground.geometry = geoData.body.features[0].geometry;
      campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
      campground.author = req.user._id;
      await campground.save();
