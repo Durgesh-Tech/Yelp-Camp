@@ -25,7 +25,7 @@ const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp';
 
 mongoose.connect(dbUrl, {
      useNewUrlParser: true,
-     useUnifiedTopology: true
+     useUnifiedTopology: true,
 });
 
 const db = mongoose.connection;
@@ -46,13 +46,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(mongoSanitize({
      replaceWith: '_',
 }));
-
 const secret = process.env.SECRET || 'thishouldbeabettersecret!';
 
 const store = new MongoStore({
      url: dbUrl,
      secret,
-     touchAfter: 24 * 3600
+     touchAfter: 24 * 60 * 60
 });
 
 store.on("error", function (e) {
@@ -67,7 +66,7 @@ const sessionConfig = {
      saveUninitialized: true,
      cookie: {
           httpOnly: true,
-          // secure: true,
+          secure: true,
           expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
           maxAge: 1000 * 60 * 60 * 24 * 7
      }
@@ -114,13 +113,14 @@ app.use(
                     "'self'",
                     "blob:",
                     "data:",
-                    "https://res.cloudinary.com/dnf40ucps/",
+                    "https://res.cloudinary.com/YOUR_CLOUDINARY_NAME/",
                     "https://images.unsplash.com/",
                ],
                fontSrc: ["'self'", ...fontSrcUrls],
           },
      })
 );
+
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -158,7 +158,6 @@ app.use((err, req, res, next) => {
 })
 
 const port = process.env.PORT || 3000;
-
 app.listen(port, () => {
      console.log(`Serving on port ${port}`)
 })
